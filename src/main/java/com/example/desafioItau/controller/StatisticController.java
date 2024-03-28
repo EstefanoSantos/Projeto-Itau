@@ -15,8 +15,6 @@ public class StatisticController {
     @Autowired
     TransactionService transactionService;
 
-    public StatisticController(){}
-
     @GetMapping
     public DoubleSummaryStatistics getTransactionsStatistics() {
         return transactionService.calculateTransactionsStatistics();

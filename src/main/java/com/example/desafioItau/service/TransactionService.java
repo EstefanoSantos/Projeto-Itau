@@ -1,64 +1,43 @@
 package com.example.desafioItau.service;
 
 import com.example.desafioItau.entity.TransactionEntity;
-import com.example.desafioItau.exceptions.TransactionException;
+import com.example.desafioItau.repository.TransactionRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.DoubleSummaryStatistics;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TransactionService {
 
-    private int idGenerator = 0;
     @Autowired
-    TransactionEntity transaction;
-    List<TransactionEntity> transactions = new ArrayList<>();
+    TransactionRepository transactionRepository;
 
-
-    public List<TransactionEntity> getAllTransactions() {
-        return transactions;
-    }
-
+    @Transactional(rollbackOn = Exception.class)
     public void fazerTransacao(TransactionEntity transacao) {
-        try {
-            if (transacao != null && transacao.getValor() >= 0) {
-                TransactionEntity novaTransacao = new TransactionEntity();
-                novaTransacao.setId(idGenerator++);
-                novaTransacao.setValor(transacao.getValor());
-                novaTransacao.setTimeStamp(transacao.getTimeStamp());
-                transactions.add(novaTransacao);
 
-            } else {
-                throw new TransactionException("O valor da transação dever ser maior que zero");
-            }
+        transactionRepository.save(transacao);
 
-        } catch (TransactionException e) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
     }
 
     public DoubleSummaryStatistics calculateTransactionsStatistics() {
-        return transactions.stream()
+        List<TransactionEntity> transacoes = transactionRepository.findAll();
+
+        return transacoes.stream()
                 .mapToDouble(TransactionEntity::getValor)
                 .summaryStatistics();
     }
 
-    public TransactionEntity getTransactionById(int id){
-        for(TransactionEntity transactionEntity : transactions) {
-            if (transaction.getId() == id) {
-                return transaction;
-            }
-        }
-        return null;
+    public TransactionEntity getTransactionById(Long id){
+        return transactionRepository.getReferenceById(id);
+    }
+
+    public List<TransactionEntity> getAllTransactions() {
+        return transactionRepository.findAll();
     }
 
     public void deleteAllTransactions() {
-        transactions.clear();
+        transactionRepository.deleteAll();
     }
 }

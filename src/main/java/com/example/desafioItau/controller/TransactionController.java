@@ -5,6 +5,7 @@ import com.example.desafioItau.exceptions.TransactionException;
 import com.example.desafioItau.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,11 +18,9 @@ public class TransactionController {
     @Autowired
     TransactionService transactionService;
 
-    public TransactionController(){}
-
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void makeTransaction(@RequestBody TransactionEntity transactionEntity) {
+    public void makeTransaction(@RequestBody @Validated TransactionEntity transactionEntity) {
         try {
             transactionService.fazerTransacao(transactionEntity);
         } catch (TransactionException e) {
