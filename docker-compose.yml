@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=itaubank
+      - MYSQL_USER=user
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+
+  spring-app:
+    image: backend-desafioitau:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/itaubank
+    depends_on:
+      - mysql-db

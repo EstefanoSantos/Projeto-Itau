@@ -11,6 +11,7 @@
 	<groupId>com.example</groupId>
 	<artifactId>desafioItau</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>desafioItau</name>
 	<description>Development of a Api Rest to control bank transactions</description>
 	<properties>
